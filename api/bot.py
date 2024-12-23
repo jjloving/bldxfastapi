@@ -46,8 +46,15 @@ async def start(update: Update, context: CallbackContext):
 
 # Initialize bot
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+logger.info(f"Bot token available: {bool(BOT_TOKEN)}")  # Will log if token exists
 if not BOT_TOKEN:
+    logger.error("No BOT_TOKEN found in environment variables")
     raise ValueError("No BOT_TOKEN found in environment variables")
 
-application = ApplicationBuilder().token(BOT_TOKEN).build()
-application.add_handler(CommandHandler("start", start)) 
+try:
+    application = ApplicationBuilder().token(BOT_TOKEN).build()
+    application.add_handler(CommandHandler("start", start))
+    logger.info("Bot initialized successfully")
+except Exception as e:
+    logger.error(f"Error initializing bot: {str(e)}")
+    raise
